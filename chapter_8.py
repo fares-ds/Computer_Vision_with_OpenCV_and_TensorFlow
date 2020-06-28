@@ -54,12 +54,18 @@ def get_contours(img):
 
             if obj_cor == 3:
                 object_type = "Tri"
+            elif obj_cor == 4:
+                asp_ratio = w / float(h)
+                if 1.05 >= asp_ratio >= 0.95:
+                    object_type = 'Square'
+                else:
+                    object_type = 'Rect'
             else:
-                object_type = None
+                object_type = 'Circle'
 
             cv2.rectangle(img_contour, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.putText(img_contour, object_type, (x + (w // 2) - 10, y + (h // 2) - 10),
-                        cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 255), 2)
+                        cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2)
 
 
 path = 'data/shapes.png'
@@ -69,6 +75,7 @@ img_contour = img.copy()
 img_gray = cv2.imread(path, 0)
 img_blur = cv2.GaussianBlur(img_gray, (7, 7), 1)
 img_canny = cv2.Canny(img_blur, 50, 50)
+
 get_contours(img_canny)
 img_stack = stack_images(0.75, ([img, img_gray], [img_contour, img_canny]))
 
